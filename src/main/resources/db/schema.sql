@@ -21,3 +21,32 @@ CREATE TABLE IF NOT EXISTS persistent_events
     KEY           IDX_STATUS_EVENTTYPE (status,event_type)*/
 );
 
+CREATE TABLE IF NOT EXISTS singers
+(
+    id   bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+    name varchar(100) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS albums
+(
+    id         bigint(20) NOT NULL AUTO_INCREMENT,
+    singer_id  bigint(20) NOT NULL,
+    title      varchar(120) NOT NULL,
+    published  timestamp    NOT NULL,
+    created_by varchar(40)  NOT NULL,
+    created_at timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_by varchar(40)  NOT NULL,
+    updated_at timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS songs
+(
+    id         bigint(20) NOT NULL AUTO_INCREMENT,
+    album_id   bigint(20) NOT NULL,
+    title      varchar(120) NOT NULL,
+    play_time  varchar(20)  NOT NULL,
+    PRIMARY KEY (id)
+);
+
