@@ -1,5 +1,6 @@
 package com.vroong.msabootcamp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Entity;
@@ -28,5 +29,6 @@ public class Singer {
   private String name;
 
   @OneToMany(mappedBy = "singer")
+  @JsonIgnore
   private Set<Album> albums = new HashSet<>();
 }

@@ -1,5 +1,6 @@
 package com.vroong.msabootcamp.application.port.in;
 
+import com.vroong.msabootcamp.application.PersistentEventCreator;
 import com.vroong.msabootcamp.application.port.out.AlbumRepository;
 import com.vroong.msabootcamp.domain.Album;
 import com.vroong.msabootcamp.domain.Song;
@@ -15,9 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class AlbumService {
 
   private final AlbumRepository repository;
+  private final PersistentEventCreator eventCreator;
 
   public Album createAlbum(Album album) {
-    return repository.save(album);
+    repository.save(album);
+    eventCreator.create("ALBUM_CREATED", album);
+
+    return album;
   }
 
   @Transactional(readOnly = true)

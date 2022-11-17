@@ -4,7 +4,6 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 
 import com.vroong.msabootcamp.application.port.out.PersistentEventRepository;
 import com.vroong.msabootcamp.domain.PersistentEvent;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,7 +57,6 @@ public class PersistentEventPublisher {
   @Transactional
   @Scheduled(fixedDelayString = "PT50S", initialDelayString = "PT10S")
   @SchedulerLock(name = "PersistentEventPublisher")
-  @Async
   public void publish() {
     final Instant timeScope = Instant.now().minus(1, ChronoUnit.MINUTES);
     List<PersistentEvent> candidates = repository.findUnproducedByTimeScope(timeScope);
