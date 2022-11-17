@@ -8,7 +8,129 @@ servers:
   - url: http://localhost:8080
     description: Development server
 
-paths: {}
+paths:
+
+  /api/singers:
+
+    post:
+      description: Create a Singer
+      operationId: createSinger
+      tags:
+        - Singer
+      requestBody:
+        content:
+          application/vnd.vroong.private.v1+json:
+            schema:
+              $ref: '#/components/schemas/Singer'
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/albums:
+
+    post:
+      description: Create an Album
+      operationId: createAlbum
+      tags:
+        - Album
+      requestBody:
+        content:
+          application/vnd.vroong.private.v1+json:
+            schema:
+              $ref: '#/components/schemas/Album'
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      description: List Albums
+      operationId: listAlbums
+      tags:
+        - Album
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/vnd.vroong.private.v1+json:
+              schema:
+                $ref: '#/components/schemas/AlbumList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/albums/{albumId}/songs:
+
+    parameters:
+      - $ref: '#/components/parameters/AlbumIdParam'
+
+    post:
+      description: Add a song
+      operationId: addSong
+      tags:
+        - Album
+      requestBody:
+        content:
+          application/vnd.vroong.private.v1+json:
+            schema:
+              $ref: '#/components/schemas/Song'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/albums/{albumId}/songs/{songId}:
+
+    parameters:
+      - $ref: '#/components/parameters/AlbumIdParam'
+      - $ref: '#/components/parameters/SongIdParam'
+
+    delete:
+      description: Remove a song
+      operationId: removeSong
+      tags:
+        - Album
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
 components:
   schemas:
@@ -102,12 +224,85 @@ components:
           default: 1
           example: 1
 
+    PlayTime:
+      type: string
+      example: 03:20
+
     #----------------------------------------
     # API Model
     #----------------------------------------
 
+    Singer:
+      type: object
+      properties:
+        singerId:
+          $ref: '#/components/schemas/LongId'
+        name:
+          $ref: '#/components/schemas/String'
+
+    AlbumList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Album'
+        page:
+          $ref: '#/components/schemas/Page'
+
+    Album:
+      type: object
+      required:
+        - title
+        - singer
+      properties:
+        albumId:
+          $ref: '#/components/schemas/LongId'
+        title:
+          $ref: '#/components/schemas/String'
+        published:
+          $ref: '#/components/schemas/DateTime'
+        singer:
+          $ref: '#/components/schemas/Singer'
+        songs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Song'
+
+    Song:
+      type: object
+      required:
+        - title
+      properties:
+        songId:
+          $ref: '#/components/schemas/LongId'
+        title:
+          $ref: '#/components/schemas/String'
+        playTime:
+          $ref: '#/components/schemas/PlayTime'
 
   parameters:
+
+    AlbumIdParam:
+      in: path
+      name: albumId
+      schema:
+        $ref: '#/components/schemas/LongId'
+      required: true
+
+    SongIdParam:
+      in: path
+      name: songId
+      schema:
+        $ref: '#/components/schemas/LongId'
+      required: true
+
+    SingerIdParam:
+      in: path
+      name: singerId
+      schema:
+        $ref: '#/components/schemas/LongId'
+      required: true
 
     PageParam:
       in: query
