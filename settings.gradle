@@ -1,0 +1,3 @@
+rootProject.name = 'msabootcamp'
+
+include 'clients'

@@ -1,0 +1,36 @@
+openApiGenerate {
+    generatorName = 'spring'
+    inputSpec = "${rootDir}/src/main/resources/swagger/api.yml".toString()
+    outputDir = "${buildDir}/openapi".toString()
+    apiPackage = 'com.vroong.msabootcamp.rest'
+    modelPackage = 'com.vroong.msabootcamp.rest'
+    modelNameSuffix = 'Dto'
+    apiFilesConstrainedTo = ['']
+    modelFilesConstrainedTo = ['']
+    supportingFilesConstrainedTo = ['ApiUtil.java']
+    configOptions = [
+            delegatePattern: 'true',
+            title: 'msabootcamp',
+            useTags: 'true',
+            dateLibrary: 'java8',
+            java8: 'true',
+            hideGenerationTimestamp: 'true'
+    ]
+    validateSpec = true
+    importMappings = [Problem: 'org.zalando.problem.Problem']
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir file("${project.buildDir.path}/openapi/src/main/java")
+        }
+    }
+}
+
+compileJava.dependsOn('openApiGenerate')
+
+task redoc(type:Exec) {
+    // For this to work correctly, `yarn global add redoc`
+    commandLine 'npx', 'redoc-cli', 'bundle', "${rootDir}/src/main/resources/swagger/api.yml", '-o', "${buildDir}/redoc.html"
+}
