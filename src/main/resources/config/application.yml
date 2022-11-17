@@ -71,6 +71,14 @@ spring:
             header-mode: headers
             partition-key-expression: headers['partitionKey']
             partition-count: 1
+        subscribableChannel:
+          binder: kafka
+          destination: local-msabootcamp-output
+          group: local-msabootcamp-consumer-group
+          content-type: application/json
+          consumer:
+            header-mode: headers
+            checkpointMode: record
       default-binder: kafka
   security:
     oauth2:
